@@ -91,13 +91,11 @@ def get_similar_movies(movie_idx, embeddings, top_k=5):
 
 
 # Main script to execute the function
-if __name__ == "__main__":
-
-    """ parameter """
-    # the data file name
-    file_name = 'IMDB Top 250 Movies.csv'
-    encoding_dim = [8, 16]
-
+""" parameter """
+# the data file name
+# file_name = '../data/IMDB Top 250 Movies.csv'
+# encoding_dim = [8, 16]
+def build_model_and_embeddings(file_name='../data/IMDB Top 250 Movies.csv', encoding_dim = [8, 16]):
     """Data """
     # Read CSV File
     movies_data = read_csv_file(file_name)
@@ -105,7 +103,7 @@ if __name__ == "__main__":
     cleaned_movies_data = handle_missing_data(movies_data)
     # One-Hot Encoded
     movies_features, genre_dummies = one_hot_encode(cleaned_movies_data, column='genre', sep=',')
-   # Budget: Not Available to NaN
+    # Budget: Not Available to NaN
     movies_features['budget'] = movies_features['budget'].replace('Not Available', np.nan)
     # Object to number
     movies_features = convert_obj2num_columns(movies_features, ['budget'])
@@ -140,11 +138,14 @@ if __name__ == "__main__":
 
     encoder = Model(inputs=input_layer, outputs=encoded)
     movie_embeddings = encoder.predict(features_array)
-    print("Movie embeddings shape:", movie_embeddings.shape)
+    # print("Movie embeddings shape:", movie_embeddings.shape)
+    return movies_data, movie_embeddings
 
+def recommend(movie_idx, movies_data, movie_embeddings, top_k=5):
     # Test: choose the first movie
-    similar_movies = get_similar_movies(0, movie_embeddings, top_k=5)
-    print("Indices of similar movies:", similar_movies)
+    similar_movies = get_similar_movies(movie_idx, movie_embeddings, top_k = top_k)
+    # print("Indices of similar movies:", similar_movies)
     # Get the name of movies from similar index
     similar_movie_names = [movies_data.iloc[i]['name'] for i in similar_movies]
-    print("Names of similar movies:", similar_movie_names)
+    # print("Names of similar movies:", similar_movie_names)
+    return similar_movie_names
