@@ -7,7 +7,7 @@ import os
 
 app = FastAPI()
 
-# 允許前端跨域呼叫
+# Enable Cross-Origin Resource Sharing (CORS) to allow frontend applications from different origins to access this API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 frontend_path = os.path.join(BASE_DIR, "frontend")
 app.mount("/frontend", StaticFiles(directory="frontend", html=True), name="frontend")
 
-# 讀取電影資料
-# movies_data = pd.read_csv("data/IMDB Top 250 Movies.csv")
+# Endpoint to retrieve the list of all movies with their IDs and names
 @app.get("/movies_list")
 def get_movies_list():
     return [{"movie_id": idx, "movie_name": row['name']} for idx, row in movies_data.iterrows()]
 
+# Endpoint to get a specific movie's details and its top-K similar movie recommendations
 @app.get("/movies/{movie_id}")
 def read_movie(movie_id: int, top_k: int = 5):
     # Get movies index
