@@ -92,9 +92,6 @@ def get_similar_movies(movie_idx, embeddings, top_k=5):
 
 # Main script to execute the function
 """ parameter """
-# the data file name
-# file_name = '../data/IMDB Top 250 Movies.csv'
-# encoding_dim = [8, 16]
 def build_model_and_embeddings(file_name='../data/IMDB Top 250 Movies.csv', encoding_dim = [8, 16]):
     """Data """
     # Read CSV File

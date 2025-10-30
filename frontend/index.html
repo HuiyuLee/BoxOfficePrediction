@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Recommendation</title>
+</head>
+<body>
+    <h2>選擇電影</h2>
+    <select id="movieSelect"></select>
+    <button onclick="getRecommendation()">推薦電影</button>
+
+    <h3>結果：</h3>
+    <ul id="resultList"></ul>
+
+    <script>
+        // 1. 取得電影列表
+        fetch("http://127.0.0.1:8000/movies_list")
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById("movieSelect");
+                data.forEach(movie => {
+                    const option = document.createElement("option");
+                    option.value = movie.movie_id;
+                    option.text = movie.movie_name;
+                    select.appendChild(option);
+                });
+            });
+
+        // 2. 取得推薦電影
+        function getRecommendation() {
+            const movie_id = document.getElementById("movieSelect").value;
+            fetch(`http://127.0.0.1:8000/movies/${movie_id}?top_k=5`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultList = document.getElementById("resultList");
+                    resultList.innerHTML = "";
+                    data.similar_movies.forEach(name => {
+                        const li = document.createElement("li");
+                        li.textContent = name;
+                        resultList.appendChild(li);
+                    });
+                });
+        }
+    </script>
+</body>
+</html>
